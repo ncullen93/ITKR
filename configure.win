@@ -8,7 +8,7 @@ cd ./src
 # itkgit=https://github.com/InsightSoftwareConsortium/ITK
 # itktag=81c14ce858a530699ee2fbf7fa48b884ad26b984
 itkgit=https://github.com/InsightSoftwareConsortium/ITK.git
-itktag=v5.3rc04 # CMAKE_SH fix
+itktag=v5.3.0 # CMAKE_SH fix
 mkdir itks itkb
 # as per https://discourse.itk.org/t/path-length-limitation-in-windows-lifted/545/12
 mkdir -p ../data
@@ -50,26 +50,8 @@ cd ../itkb
 # -DVNL_CONFIG_ENABLE_SSE2_ROUNDING:BOOL=OFF \
 
 compflags=" -fPIC -O2 -lws2_32 -lgdi32 -mwindows -msse4.1 -mssse3 -Wa,-mbig-obj"
-cmaker=`${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "x=Sys.which('cmake'); cat(x)"`
-if [ -z "${cmaker}" ]; then
-    res=`${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "cat(('cmaker' %in% installed.packages())*1)"`
-    if [ $res -eq 0 ];
-    then
-        git clone https://github.com/stnava/cmaker
-        R CMD INSTALL cmaker
-        rm -rf cmaker
-    fi
-    cmaker=`${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "x=cmaker::cmake()"`
-    # cmake_path=`dirname cmaker`
-    # export PATH=${PATH}:${cmake_path}
-    # cmaker="cmake"
-else
-    cmaker="cmake.exe"
-fi
 
-echo ${cmaker}
-
-${cmaker} \
+cmake.exe \
     -G "MinGW Makefiles" \
     -DCMAKE_BUILD_TYPE:STRING="${CMAKE_BUILD_TYPE}" \
     -DCMAKE_C_FLAGS=" ${CMAKE_C_FLAGS} ${compflags} -DNDEBUG -D_FILE_OFFSET_BITS=64 "\
